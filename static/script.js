@@ -33,7 +33,7 @@ function createTaskCard(task, index) {
     deleteBtn.className = "deleteBtn";
     deleteBtn.addEventListener("click", function(event) {
         event.stopPropagation();
-        fetch("http://127.0.0.1:5000/tasks/" + task.id, {
+        fetch("/tasks/" + task.id, {
             method: "DELETE"
         })
         .then(function(response) {
@@ -62,7 +62,7 @@ function createTaskCard(task, index) {
     addSubtaskBtn.textContent = "Add";
 
     function loadSubtasks() {
-        fetch("http://127.0.0.1:5000/subtasks/" + task.id)
+        fetch("/subtasks/" + task.id)
             .then(function(response) {
                 return response.json();
             })
@@ -76,7 +76,7 @@ function createTaskCard(task, index) {
                     subDeleteBtn.textContent = "x";
                     subDeleteBtn.addEventListener("click", function(event) {
                         event.stopPropagation();
-                        fetch("http://127.0.0.1:5000/tasks/" + subtask.id, {
+                        fetch("/tasks/" + subtask.id, {
                             method: "DELETE"
                         })
                         .then(function(response) {
@@ -100,7 +100,7 @@ function createTaskCard(task, index) {
             return;
         }
 
-        fetch("http://127.0.0.1:5000/tasks", {
+        fetch("/tasks", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -140,7 +140,7 @@ function createTaskCard(task, index) {
 }
 
 function loadTasks() {
-    fetch("http://127.0.0.1:5000/tasks/" + currentUserId)
+    fetch("/tasks/" + currentUserId)
         .then(function(response) {
             return response.json();
         })
@@ -159,7 +159,7 @@ function showTaskSection() {
 }
 
 signupBtn.addEventListener("click", function() {
-    fetch("http://127.0.0.1:5000/signup", {
+    fetch("/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -180,7 +180,7 @@ signupBtn.addEventListener("click", function() {
 });
 
 loginBtn.addEventListener("click", function() {
-    fetch("http://127.0.0.1:5000/login", {
+    fetch("/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -218,7 +218,7 @@ addBtn.addEventListener("click", function() {
         return;
     }
 
-    fetch("http://127.0.0.1:5000/tasks", {
+    fetch("/tasks", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ task: taskText, user_id: currentUserId })
