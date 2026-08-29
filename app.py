@@ -2,6 +2,7 @@ from flask import Flask, request, render_template
 from flask_cors import CORS
 from flask_bcrypt import Bcrypt
 import sqlite3
+import os
 
 app = Flask(__name__)
 CORS(app)
@@ -11,6 +12,30 @@ def get_db_connection():
     connection = sqlite3.connect("tasks.db")
     connection.row_factory = sqlite3.Row
     return connection
+
+def init_db():
+    connection = get_db_connection()
+    connection.execute("""
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT UNIQUE NOT NULL,
+            password TEXT NOT NULL
+        )
+    """)
+    connection.execute("""
+        CREATE TABLE IF NOT EXISTS tasks (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            text TEXT NOT NULL,
+            user_id INTEGER NOT NULL,
+            parent_id INTEGER,
+            FOREIGN KEY (user_id) REFERENCES users (id),
+            FOREIGN KEY (parent_id) REFERENCES tasks (id)
+        )
+    """)
+    connection.commit()
+    connection.close()
+
+init_db()
 
 @app.route("/")
 def home():
@@ -117,8 +142,6 @@ def delete_task(task_id):
         return get_subtasks(task["parent_id"])
     else:
         return get_main_tasks(task["user_id"])
-
-import os
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
